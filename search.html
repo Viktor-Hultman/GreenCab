@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="index.js" defer></script>
+    <script src="search.js" defer></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     </script>
@@ -19,7 +19,26 @@
 
 <body>
     <div id="background">
-        
+        <div id="search-window">
+            <section class="section" id="search">
+                <div class="geocoder" id="geocoder-start"></div>
+                <div class="geocoder" id="geocoder-end"></div>
+            </section>
+            <section class="section" id="departure-section">
+                <section class="time-section">
+                    <button class="time-btn btn-pressed" id="åk-nu" >Åk nu</button>
+                    <button class="time-btn" id="avgång" >Avgång</button>
+                    <button class="time-btn" id="ankomst" >Ankomst</button>
+                </section>
+                <section class="time-section">
+                    <div id="time-select">Tid</div>
+                </section>
+            </section>
+            <section class="section">
+                <div id="map"></div>
+                <button class="continue-btn" id="search-btn" onclick="toFilter()">Tillval</button>
+            </section>
+        </div>
         <!-- <div id="landing-window">
             <section class="landing-section" id="logo">
                 <img src="imgs/GreenCabLogo.png" alt="GreenCab logo">
