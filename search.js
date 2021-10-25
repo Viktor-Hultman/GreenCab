@@ -6,29 +6,62 @@ const map = new mapboxgl.Map({
     container: 'map', //Selecting the div with the id of 'map' as the maps location
     style: 'mapbox://styles/mapbox/streets-v11',
     center: [17.936536, 59.224263], // starting position
-    zoom: 12 
+    zoom: 12
 })
 
 //The setup and functionality of the geocoders/ searchfields
 let geocoderStart = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    marker: false,
+    marker: true,
     placeholder: "From",
-    flyTo: false,
+    flyTo: true,
     mapboxgl: mapboxgl
 });
 
 let geocoderEnd = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    marker: false,
+    marker: true,
     placeholder: "To",
-    flyTo: false,
+    flyTo: true,
     mapboxgl: mapboxgl
 });
 
 //Here I append the geocoders above to my div elements in order to place the geocoders outside of the map/ in a custom location
 document.getElementById('geocoder-start').appendChild(geocoderStart.onAdd(map));
 document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
+
+const posbtn = document.getElementById('my-pos-icon');
+
+posbtn.addEventListener("click", function () {
+    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+        enableHighAccuracy: true
+    });
+})
+
+
+//If the user allow the program to use their location, the start location will be set to their current location
+function successLocation(position) {
+    let startCoords = [position.coords.longitude, position.coords.latitude]
+    // checkboxStart.checked = true
+    console.log(startCoords)
+
+    let posMarker = new mapboxgl.Marker()
+        .setLngLat(startCoords)
+        .addTo(map);
+
+
+
+
+    map.flyTo({
+        center: startCoords,
+        zoom: 12,
+        bearing: 0
+    })
+}
+
+function errorLocation() {
+    return
+}
 
 //Targeting some elements
 const startGeo = document.getElementById('geocoder-start')
@@ -41,8 +74,8 @@ const startSugg = startGeo.getElementsByTagName('ul')[0];
 //Function for hiding the second geocoder/searchfield because it overlapped the "suggestions" from the first searchfield
 startInput.addEventListener('input', function () {
     //A setTimeout for timing with the api "fetching" of the suggestions
-    setTimeout(function() {
-        if(startSugg.getAttribute("style") == 'display: block;') {
+    setTimeout(function () {
+        if (startSugg.getAttribute("style") == 'display: block;') {
             endGeo.classList.add('hide')
             console.log("now the suggestions show")
         } else {
@@ -55,11 +88,13 @@ startInput.addEventListener('input', function () {
 //Function to "unhide" the second searchfield when a suggestion is picked
 startInput.addEventListener("blur", function () {
     //SetTimeout for timing
-    setTimeout(function() {
+    setTimeout(function () {
         endGeo.classList.remove('hide')
     }, 80)
-    
+
 })
+
+
 
 //Targeting elements
 const åkNuBtn = document.getElementById('åk-nu')
@@ -72,7 +107,7 @@ function toFilter() {
 
 //The following eventListeners are for toggeling a specific css style between 3 buttons (only 1 should be "active")
 åkNuBtn.addEventListener("click", function () {
-    if(avgångBtn.classList.contains('btn-pressed')) {
+    if (avgångBtn.classList.contains('btn-pressed')) {
         avgångBtn.classList.toggle('btn-pressed')
         åkNuBtn.classList.toggle('btn-pressed')
 
@@ -80,13 +115,13 @@ function toFilter() {
         ankomstBtn.classList.toggle('btn-pressed')
         åkNuBtn.classList.toggle('btn-pressed')
 
-    } else if(åkNuBtn.classList.contains('btn-pressed')) {
+    } else if (åkNuBtn.classList.contains('btn-pressed')) {
         return
-    } 
+    }
 })
 
 avgångBtn.addEventListener("click", function () {
-    if(åkNuBtn.classList.contains('btn-pressed')) {
+    if (åkNuBtn.classList.contains('btn-pressed')) {
         åkNuBtn.classList.toggle('btn-pressed')
         avgångBtn.classList.toggle('btn-pressed')
 
@@ -94,13 +129,13 @@ avgångBtn.addEventListener("click", function () {
         ankomstBtn.classList.toggle('btn-pressed')
         åkNuBtn.classList.toggle('btn-pressed')
 
-    } else if(avgångBtn.classList.contains('btn-pressed')) {
+    } else if (avgångBtn.classList.contains('btn-pressed')) {
         return
     }
 })
 
 ankomstBtn.addEventListener("click", function () {
-    if(åkNuBtn.classList.contains('btn-pressed')) {
+    if (åkNuBtn.classList.contains('btn-pressed')) {
         åkNuBtn.classList.toggle('btn-pressed')
         ankomstBtn.classList.toggle('btn-pressed')
 
@@ -108,7 +143,7 @@ ankomstBtn.addEventListener("click", function () {
         avgångBtn.classList.toggle('btn-pressed')
         ankomstBtn.classList.toggle('btn-pressed')
 
-    } else if(ankomstBtn.classList.contains('btn-pressed')) {
+    } else if (ankomstBtn.classList.contains('btn-pressed')) {
         return
     }
 })
