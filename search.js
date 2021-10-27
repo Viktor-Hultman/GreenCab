@@ -18,6 +18,14 @@ let geocoderStart = new MapboxGeocoder({
     mapboxgl: mapboxgl
 });
 
+geocoderStart.on('result', ({ result }) => {
+    if (posMarker != undefined) {
+        posMarker.remove()
+        posMarker = undefined
+    }
+    console.log(result.center);
+});
+
 let geocoderEnd = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     marker: true,
@@ -32,29 +40,94 @@ document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
 
 const posbtn = document.getElementById('my-pos-icon');
 
+//Eventlistener for the "my position" button
 posbtn.addEventListener("click", function () {
+    //The code ask the user if it can use their location, if yes then the "sucessLocation" func will run
     navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
         enableHighAccuracy: true
     });
 })
 
+let posMarker
+let startCoords = []
+let fromInput = document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[0];
+let fromClearBtn = document.getElementsByClassName("mapboxgl-ctrl-geocoder--button")[0];
 
-//If the user allow the program to use their location, the start location will be set to their current location
+//Adding event for clear button
+fromClearBtn.addEventListener('click', function () {
+    if(posMarker != undefined)
+    //Removes the "my position" marker
+    posMarker.remove()
+    posMarker = undefined
+})
+
+//If the user allow the program to use their location, this function runs
 function successLocation(position) {
-    let startCoords = [position.coords.longitude, position.coords.latitude]
-    // checkboxStart.checked = true
-    console.log(startCoords)
+    //Checks if a starting position marker exist
+    if (posMarker == undefined && geocoderStart.mapMarker == null) {
+        //Saves the users position as the starting coordinates and adds them to a variable
+        startCoords = [position.coords.longitude, position.coords.latitude]
+        // checkboxStart.checked = true
+        console.log(startCoords)
+        //Creates a new marker and places it on the map with the users position
+        posMarker = new mapboxgl.Marker()
+            .setLngLat(startCoords)
+            .addTo(map);
+        //The map then centers on the users position
+        map.flyTo({
+            center: startCoords,
+            zoom: 12,
+            bearing: 0
+        })
+        //Sets the value of the "from inputfield" to the users coords to show it worked
+        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
+        //The "X" button in the field is displayed to able the user to remove the value of the field
+        fromClearBtn.style = 'display: block;'
 
-    let posMarker = new mapboxgl.Marker()
-        .setLngLat(startCoords)
-        .addTo(map);
+        //The else statement does the same as the above one, exept it also removes the previous "starting" marker from the map first
+    } else if (posMarker != undefined) {
+        posMarker.remove()
+        posMarker = undefined
 
+        startCoords = [position.coords.longitude, position.coords.latitude]
+        // checkboxStart.checked = true
+        console.log(startCoords)
 
-    map.flyTo({
-        center: startCoords,
-        zoom: 12,
-        bearing: 0
-    })
+        posMarker = new mapboxgl.Marker()
+            .setLngLat(startCoords)
+            .addTo(map);
+
+        map.flyTo({
+            center: startCoords,
+            zoom: 12,
+            bearing: 0
+        })
+
+        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
+        fromClearBtn.style = 'display: block;'
+
+        //Lastly, does the same as the above statements, exept removes the marker that the geocoder creates
+    } else {
+        //Targets and removes the marker that the "start" geocoder created
+        geocoderStart.mapMarker.remove()
+
+        startCoords = [position.coords.longitude, position.coords.latitude]
+        // checkboxStart.checked = true
+        console.log(startCoords)
+
+        posMarker = new mapboxgl.Marker()
+            .setLngLat(startCoords)
+            .addTo(map);
+
+        map.flyTo({
+            center: startCoords,
+            zoom: 12,
+            bearing: 0
+        })
+
+        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
+        fromClearBtn.style = 'display: block;'
+    }
 }
 
 function errorLocation() {

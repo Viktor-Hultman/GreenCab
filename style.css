@@ -190,4 +190,10 @@ body {
         line-height: 24px !important;
         max-width: 100% !important;
     }
+    .mapboxgl-ctrl-geocoder--icon-search {
+        top: 13px !important;
+        left: 12px !important;
+        width: 23px !important;
+        height: 23px !important;
+    }
 }
