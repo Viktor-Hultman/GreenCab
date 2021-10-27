@@ -12,8 +12,20 @@ const map = new mapboxgl.Map({
 //The setup and functionality of the geocoders/ searchfields
 let geocoderStart = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    marker: true,
+    marker: {
+        color: "#4D8C2D"
+    },
     placeholder: "From",
+    flyTo: true,
+    mapboxgl: mapboxgl
+});
+
+let geocoderEnd = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    marker: {
+        color: "red"
+    },
+    placeholder: "To",
     flyTo: true,
     mapboxgl: mapboxgl
 });
@@ -24,20 +36,93 @@ geocoderStart.on('result', ({ result }) => {
         posMarker = undefined
     }
     console.log(result.center);
+    startCoords = result.center
+    localStorage.setItem("start", JSON.stringify(startCoords))
 });
 
-let geocoderEnd = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    marker: true,
-    placeholder: "To",
-    flyTo: true,
-    mapboxgl: mapboxgl
+geocoderEnd.on('result', ({ result }) => {
+    console.log(result.center);
+    endCoords = result.center
+    localStorage.setItem("end", JSON.stringify(endCoords))
 });
 
 //Here I append the geocoders above to my div elements in order to place the geocoders outside of the map/ in a custom location
 document.getElementById('geocoder-start').appendChild(geocoderStart.onAdd(map));
 document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
 
+//Date and time picker code below
+
+//The full date of when this line of code runs
+let fullDate = new Date();
+
+//Creates new objects with using some of the dates
+let today = {
+    day: fullDate.getDay(),
+    dayOfMonth: fullDate.getDate(),
+    month: fullDate.getMonth()
+}
+
+let tomorrow = new Date()
+//For dates later than the current one I set a new date that is one day later then the previous one
+tomorrow.setDate(fullDate.getDate() + 1)
+oneDayFromNow = {
+    day: tomorrow.getDay(),
+    dayOfMonth: tomorrow.getDate(),
+    month: tomorrow.getMonth()
+}
+
+let twoDays = new Date()
+twoDays.setDate(tomorrow.getDate() + 1)
+twoDaysFromNow = {
+    day: twoDays.getDay(),
+    dayOfMonth: twoDays.getDate(),
+    month: twoDays.getMonth()
+}
+
+let threeDays = new Date()
+threeDays.setDate(twoDays.getDate() + 1)
+threeDaysFromNow = {
+    day: threeDays.getDay(),
+    dayOfMonth: threeDays.getDate(),
+    month: threeDays.getMonth()
+}
+
+let fourDays = new Date()
+fourDays.setDate(threeDays.getDate() + 1)
+fourDaysFromNow = {
+    day: fourDays.getDay(),
+    dayOfMonth: fourDays.getDate(),
+    month: fourDays.getMonth()
+}
+
+// `${fullDate.getDay()}-${fullDate.getDate()}-${fullDate.getMonth()}`
+
+
+//This function loops through the days of the week and the months of the year
+// and places them in the object that get passed as a value.
+// For example, "sön" is represented as the num 0 in the .getDay() above in the objects,
+// that meens that the for loop for the days will not run and in turn the "i" will be 0
+function dateConverter(dateObj) {
+    let days = ["sön", "mån", "tis", "ons", "tors", "fre", "lör"];
+    let months = ["jan", "feb", "mars", "april", "maj", "juni", "juli", "aug", "sept", "okt", "nov", "dec"];
+    let i
+    let j
+    for (i = 0; i < dateObj.day; i++) {}
+    for (j = 0; j < dateObj.month; j++) {} 
+    dateObj.day = days[i]
+    dateObj.month = months[j]
+}
+
+//The dateConverter converts all the date objects
+dateConverter(today)
+dateConverter(oneDayFromNow)
+dateConverter(twoDaysFromNow)
+dateConverter(threeDaysFromNow)
+dateConverter(fourDaysFromNow)
+
+
+
+//Targeting the "my position" button/icon
 const posbtn = document.getElementById('my-pos-icon');
 
 //Eventlistener for the "my position" button
@@ -50,15 +135,26 @@ posbtn.addEventListener("click", function () {
 
 let posMarker
 let startCoords = []
+let endCoords = []
 let fromInput = document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[0];
+let toInput = document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[1];
 let fromClearBtn = document.getElementsByClassName("mapboxgl-ctrl-geocoder--button")[0];
+let toClearBtn = document.getElementsByClassName("mapboxgl-ctrl-geocoder--button")[1];
 
 //Adding event for clear button
 fromClearBtn.addEventListener('click', function () {
-    if(posMarker != undefined)
-    //Removes the "my position" marker
-    posMarker.remove()
+    if (posMarker != undefined)
+        //Removes the "my position" marker
+        posMarker.remove()
     posMarker = undefined
+    //Removes the start location from local storage
+    localStorage.removeItem("start")
+})
+
+//Adding event for clear button
+toClearBtn.addEventListener('click', function () {
+    //Removes the end location from local storage
+    localStorage.removeItem("end")
 })
 
 //If the user allow the program to use their location, this function runs
@@ -70,7 +166,9 @@ function successLocation(position) {
         // checkboxStart.checked = true
         console.log(startCoords)
         //Creates a new marker and places it on the map with the users position
-        posMarker = new mapboxgl.Marker()
+        posMarker = new mapboxgl.Marker({
+            color: "#4D8C2D"
+        })
             .setLngLat(startCoords)
             .addTo(map);
         //The map then centers on the users position
@@ -93,7 +191,9 @@ function successLocation(position) {
         // checkboxStart.checked = true
         console.log(startCoords)
 
-        posMarker = new mapboxgl.Marker()
+        posMarker = new mapboxgl.Marker({
+            color: "#4D8C2D"
+        })
             .setLngLat(startCoords)
             .addTo(map);
 
@@ -115,7 +215,9 @@ function successLocation(position) {
         // checkboxStart.checked = true
         console.log(startCoords)
 
-        posMarker = new mapboxgl.Marker()
+        posMarker = new mapboxgl.Marker({
+            color: "#4D8C2D"
+        })
             .setLngLat(startCoords)
             .addTo(map);
 
@@ -128,6 +230,8 @@ function successLocation(position) {
         fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
         fromClearBtn.style = 'display: block;'
     }
+
+    localStorage.setItem("start", JSON.stringify(startCoords))
 }
 
 function errorLocation() {
@@ -153,7 +257,7 @@ startInput.addEventListener('input', function () {
             endGeo.classList.remove('hide')
             console.log("now the suggestions are hidden")
         }
-    }, 250)
+    }, 300)
 })
 
 //Function to "unhide" the second searchfield when a suggestion is picked
@@ -175,6 +279,27 @@ const ankomstBtn = document.getElementById('ankomst')
 function toFilter() {
     location.href = 'filter.html'
 }
+
+let tripTimeArr = []
+let dateTime
+
+function getCurrentDate() {
+    let today = new Date();
+    let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    dateTime = date + ' ' + time;
+}
+
+//To use when pressing the "Tillval" button
+// if (åkNuBtn.classList.contains('btn-pressed')) {
+//     getCurrentDate()
+//     let tripTimeObj = {
+//         time: "Åk nu",
+//         departure: dateTime
+//     }
+//     localStorage.setItem("time", JSON.stringify(tripTimeObj))
+// }
+
 
 //The following eventListeners are for toggeling a specific css style between 3 buttons (only 1 should be "active")
 åkNuBtn.addEventListener("click", function () {
