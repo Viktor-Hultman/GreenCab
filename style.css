@@ -112,12 +112,16 @@ body {
     margin-bottom: 120px;
 }
 
-#date-picker {
+#date-time-picker {
     width: 90%;
     height: 50%;
     background: #4D8C2D;
     display: flex;
     align-items: center;
+}
+
+#time-select {
+    display: flex;
 }
 
 #map {

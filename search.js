@@ -107,8 +107,8 @@ function dateConverter(dateObj) {
     let months = ["jan", "feb", "mars", "april", "maj", "juni", "juli", "aug", "sept", "okt", "nov", "dec"];
     let i
     let j
-    for (i = 0; i < dateObj.day; i++) {}
-    for (j = 0; j < dateObj.month; j++) {} 
+    for (i = 0; i < dateObj.day; i++) { }
+    for (j = 0; j < dateObj.month; j++) { }
     dateObj.day = days[i]
     dateObj.month = months[j]
 }
@@ -120,7 +120,96 @@ dateConverter(twoDaysFromNow)
 dateConverter(threeDaysFromNow)
 dateConverter(fourDaysFromNow)
 
+function createDatePicker() {
+    //Placing all the options for the datePicker in an array
+    let dateSelectOptions = [today, oneDayFromNow, twoDaysFromNow, threeDaysFromNow, fourDaysFromNow];
 
+    //Creating a select element and giving it a name and date attribute
+    let dateSelect = document.createElement("select");
+    dateSelect.name = "dates";
+    dateSelect.id = "dates";
+
+    //The for loop loops through the array and executes the code below for each value of the array (every object)
+    for (const val of dateSelectOptions) {
+        //Creating an option element
+        let option = document.createElement("option");
+        //Asssigning a value and text attribute to each option that is formated the same ex(tors, 28 okt)
+        option.value = `${val.day}, ${val.dayOfMonth} ${val.month}`;
+        option.text = `${val.day}, ${val.dayOfMonth} ${val.month}`;
+        //Lastly, appends the option to the select element as an option
+        dateSelect.appendChild(option);
+    }
+    //And finaly appends the select to the "date-select" div/container 
+    document.getElementById("date-select").appendChild(dateSelect);
+}
+
+function createTimePickers() {
+    //Empty arrays to fill with several values
+    let hourSelectOptions = []
+    let minSelectOptions = []
+    //Pushes the numbers 1-23 to the hours arr
+    for (let i = 0; i < 24; i++) {
+        if (i < 10) {
+            let j = "0" + i.toString()
+            hourSelectOptions.push([j])
+        } else {
+            hourSelectOptions.push([i]);
+        }
+
+    }
+    //Pushes the numbers 1-59 to the mins arr
+    for (let i = 0; i < 60; i++) {
+        if (i < 10) {
+            let j = "0" + i.toString()
+            minSelectOptions.push([j])
+        } else {
+            minSelectOptions.push([i]);
+        }
+    }
+    // console.log(hourSelectOptions)
+
+    //Creating a select element and giving it a name and date attribute
+    let hourSelect = document.createElement("select");
+    hourSelect.name = "hours";
+    hourSelect.id = "hours";
+
+    //Creating a select element and giving it a name and date attribute
+    let minSelect = document.createElement("select");
+    minSelect.name = "mins";
+    minSelect.id = "mins";
+
+    //The for loop loops through the array and executes the code below for each value of the array (every object)
+    for (const val of hourSelectOptions) {
+        //Creating an option element
+        let option = document.createElement("option");
+        //Asssigning a value and text attribute to each option that is formated the same ex(tors, 28 okt)
+        option.value = val;
+        option.text = val;
+        //Lastly, appends the option to the select element as an option
+        hourSelect.appendChild(option);
+    }
+
+    //The for loop loops through the array and executes the code below for each value of the array (every object)
+    for (const val of minSelectOptions) {
+        //Creating an option element
+        let option = document.createElement("option");
+        //Asssigning a value and text attribute to each option that is formated the same ex(tors, 28 okt)
+        option.value = val;
+        option.text = val;
+        //Lastly, appends the option to the select element as an option
+        minSelect.appendChild(option);
+    }
+    let pointH3 = document.createElement("h3");
+    pointH3.innerText = ":"
+    //And finaly appends the select to the "date-select" div/container 
+    document.getElementById("time-select").appendChild(hourSelect);
+    document.getElementById("time-select").appendChild(pointH3);
+    document.getElementById("time-select").appendChild(minSelect);
+}
+
+//Creates the datePicker and timePickers
+createDatePicker()
+createTimePickers()
 
 //Targeting the "my position" button/icon
 const posbtn = document.getElementById('my-pos-icon');
@@ -136,10 +225,10 @@ posbtn.addEventListener("click", function () {
 let posMarker
 let startCoords = []
 let endCoords = []
-let fromInput = document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[0];
-let toInput = document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[1];
-let fromClearBtn = document.getElementsByClassName("mapboxgl-ctrl-geocoder--button")[0];
-let toClearBtn = document.getElementsByClassName("mapboxgl-ctrl-geocoder--button")[1];
+let fromInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[0];
+let toInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[1];
+let fromClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[0];
+let toClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[1];
 
 //Adding event for clear button
 fromClearBtn.addEventListener('click', function () {
