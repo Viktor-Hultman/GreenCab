@@ -52,6 +52,31 @@ document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
 
 //Date and time picker code below
 
+//Function for adding the current time to the "today" object
+function åkNu() {
+    let nowTime = new Date();
+    let hours = nowTime.getHours()
+    let mins = nowTime.getMinutes()
+    if(hours < 10) {
+        hours = "0" + hours
+    }
+    if(mins < 10) {
+        mins = "0" + mins
+    }
+    today.time = hours + ":" + mins;
+    localStorage.setItem("tripTime-Date", JSON.stringify(today))
+}
+
+//To use when pressing the "Tillval" button
+// if (åkNuBtn.classList.contains('btn-pressed')) {
+//     getCurrentDate()
+//     let tripTimeObj = {
+//         time: "Åk nu",
+//         departure: dateTime
+//     }
+//     localStorage.setItem("time", JSON.stringify(tripTimeObj))
+// }
+
 //The full date of when this line of code runs
 let fullDate = new Date();
 
@@ -59,7 +84,8 @@ let fullDate = new Date();
 let today = {
     day: fullDate.getDay(),
     dayOfMonth: fullDate.getDate(),
-    month: fullDate.getMonth()
+    month: fullDate.getMonth(),
+    time: null
 }
 
 let tomorrow = new Date()
@@ -129,6 +155,14 @@ function createDatePicker() {
     dateSelect.name = "dates";
     dateSelect.id = "dates";
 
+    //Creating a default option so the user needs to choose
+    let defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    defaultOption.text = "Välj ett datum"
+    dateSelect.appendChild(defaultOption);
+
     //The for loop loops through the array and executes the code below for each value of the array (every object)
     for (const val of dateSelectOptions) {
         //Creating an option element
@@ -178,6 +212,21 @@ function createTimePickers() {
     minSelect.name = "mins";
     minSelect.id = "mins";
 
+    //Creating default-options so the user needs to choose
+    let defaultOptionH = document.createElement("option");
+    defaultOptionH.value = "";
+    defaultOptionH.disabled = true;
+    defaultOptionH.selected = true;
+    defaultOptionH.text = "Tim"
+    hourSelect.appendChild(defaultOptionH);
+
+    let defaultOptionM = document.createElement("option");
+    defaultOptionM.value = "";
+    defaultOptionM.disabled = true;
+    defaultOptionM.selected = true;
+    defaultOptionM.text = "Min"
+    minSelect.appendChild(defaultOptionM);
+
     //The for loop loops through the array and executes the code below for each value of the array (every object)
     for (const val of hourSelectOptions) {
         //Creating an option element
@@ -211,6 +260,24 @@ function createTimePickers() {
 createDatePicker()
 createTimePickers()
 
+localStorage.setItem("tripTime-Date", JSON.stringify(today))
+
+const dateSelection = document.getElementById("dates");
+const hourSelection = document.getElementById("hours");
+const minSelection = document.getElementById("mins");
+
+dateSelection.addEventListener('change', function() {
+    localStorage.setItem("date", this.value);
+})
+
+hourSelection.addEventListener('change', function() {
+    localStorage.setItem("hour", this.value);
+})
+
+minSelection.addEventListener('change', function() {
+    localStorage.setItem("min", this.value);
+})
+
 //Targeting the "my position" button/icon
 const posbtn = document.getElementById('my-pos-icon');
 
@@ -223,8 +290,8 @@ posbtn.addEventListener("click", function () {
 })
 
 let posMarker
-let startCoords = []
-let endCoords = []
+let startCoords = null
+let endCoords = null
 let fromInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[0];
 let toInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[1];
 let fromClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[0];
@@ -238,12 +305,14 @@ fromClearBtn.addEventListener('click', function () {
     posMarker = undefined
     //Removes the start location from local storage
     localStorage.removeItem("start")
+    startCoords = null
 })
 
 //Adding event for clear button
 toClearBtn.addEventListener('click', function () {
     //Removes the end location from local storage
     localStorage.removeItem("end")
+    endCoords = null
 })
 
 //If the user allow the program to use their location, this function runs
@@ -359,25 +428,30 @@ startInput.addEventListener("blur", function () {
 })
 
 
-
 //Targeting elements
 const åkNuBtn = document.getElementById('åk-nu')
 const avgångBtn = document.getElementById('avgång')
 const ankomstBtn = document.getElementById('ankomst')
 
 function toFilter() {
-    location.href = 'filter.html'
+    if(startCoords != null && endCoords != null && åkNuBtn.classList.contains('btn-pressed')) {
+        åkNu()
+        location.href = 'filter.html'
+    } else {
+        alert("Pls fill all fields")
+    }
+    
 }
 
-let tripTimeArr = []
-let dateTime
+// let tripTimeArr = []
+// let departure
 
-function getCurrentDate() {
-    let today = new Date();
-    let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    dateTime = date + ' ' + time;
-}
+// function getCurrentDate() {
+//     let today = new Date();
+//     let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+//     let time = today.getHours() + ":" + today.getMinutes();
+//     departure = date + ' ' + time;
+// }
 
 //To use when pressing the "Tillval" button
 // if (åkNuBtn.classList.contains('btn-pressed')) {
