@@ -139,7 +139,6 @@ fourDaysFromNow = {
     month: fourDays.getMonth()
 }
 
-
 //This function loops through the days of the week and the months of the year
 // and places them in the object that get passed as a value.
 // For example, "sön" is represented as the num 0 in the .getDay() above in the objects,
@@ -176,7 +175,8 @@ function createDatePicker() {
     defaultOption.value = "";
     defaultOption.disabled = true;
     defaultOption.selected = true;
-    defaultOption.text = "Välj ett datum"
+    defaultOption.hidden = true;
+    defaultOption.text = "Välj datum"
     dateSelect.appendChild(defaultOption);
 
     //The for loop loops through the array and executes the code below for each value of the array (every object)
@@ -184,6 +184,7 @@ function createDatePicker() {
         //Creating an option element
         let option = document.createElement("option");
         //Asssigning a value and text attribute to each option that is formated the same ex(tors, 28 okt)
+        option.classList.add("date-options")
         option.value = `${val.day}, ${val.dayOfMonth} ${val.month}`;
         option.text = `${val.day}, ${val.dayOfMonth} ${val.month}`;
         //Lastly, appends the option to the select element as an option
@@ -232,6 +233,7 @@ function createTimePickers() {
     defaultOptionH.value = "";
     defaultOptionH.disabled = true;
     defaultOptionH.selected = true;
+    defaultOptionH.hidden = true;
     defaultOptionH.text = "Tim"
     hourSelect.appendChild(defaultOptionH);
 
@@ -239,6 +241,7 @@ function createTimePickers() {
     defaultOptionM.value = "";
     defaultOptionM.disabled = true;
     defaultOptionM.selected = true;
+    defaultOptionM.hidden = true;
     defaultOptionM.text = "Min"
     minSelect.appendChild(defaultOptionM);
 
@@ -247,6 +250,7 @@ function createTimePickers() {
         //Creating an option element
         let option = document.createElement("option");
         //Asssigning a value and text attribute to each option that is formated the same ex(tors, 28 okt)
+        option.classList.add("hour-options")
         option.value = val;
         option.text = val;
         //Lastly, appends the option to the select element as an option
@@ -258,6 +262,7 @@ function createTimePickers() {
         //Creating an option element
         let option = document.createElement("option");
         //Asssigning a value and text attribute to each option that is formated the same ex(tors, 28 okt)
+        option.classList.add("min-options")
         option.value = val;
         option.text = val;
         //Lastly, appends the option to the select element as an option
@@ -453,17 +458,20 @@ startInput.addEventListener("blur", function () {
 const åkNuBtn = document.getElementById('åk-nu')
 const avgångBtn = document.getElementById('avgång')
 const ankomstBtn = document.getElementById('ankomst')
+const dateTimeSection = document.getElementById("date-time-picker")
 
 //The following eventListeners are for toggeling a specific css style between 3 buttons (only 1 should be "active")
 åkNuBtn.addEventListener("click", function () {
     if (avgångBtn.classList.contains('btn-pressed')) {
         avgångBtn.classList.toggle('btn-pressed')
         åkNuBtn.classList.toggle('btn-pressed')
-
+        dateTimeSection.classList.add("greyOut")
+        dateTimeSection.setAttribute("disabled", "")
     } else if (ankomstBtn.classList.contains('btn-pressed')) {
         ankomstBtn.classList.toggle('btn-pressed')
         åkNuBtn.classList.toggle('btn-pressed')
-
+        dateTimeSection.classList.add("greyOut")
+        dateTimeSection.setAttribute("disabled", "")
     } else if (åkNuBtn.classList.contains('btn-pressed')) {
         return
     }
@@ -473,11 +481,13 @@ avgångBtn.addEventListener("click", function () {
     if (åkNuBtn.classList.contains('btn-pressed')) {
         åkNuBtn.classList.toggle('btn-pressed')
         avgångBtn.classList.toggle('btn-pressed')
-
+        dateTimeSection.classList.remove("greyOut")
+        dateTimeSection.removeAttribute("disabled")
     } else if (ankomstBtn.classList.contains('btn-pressed')) {
         ankomstBtn.classList.toggle('btn-pressed')
         avgångBtn.classList.toggle('btn-pressed')
-
+        dateTimeSection.classList.remove("greyOut")
+        dateTimeSection.removeAttribute("disabled")
     } else if (avgångBtn.classList.contains('btn-pressed')) {
         return
     }
@@ -487,34 +497,41 @@ ankomstBtn.addEventListener("click", function () {
     if (åkNuBtn.classList.contains('btn-pressed')) {
         åkNuBtn.classList.toggle('btn-pressed')
         ankomstBtn.classList.toggle('btn-pressed')
-
+        dateTimeSection.classList.remove("greyOut")
+        dateTimeSection.removeAttribute("disabled")
     } else if (avgångBtn.classList.contains('btn-pressed')) {
         avgångBtn.classList.toggle('btn-pressed')
         ankomstBtn.classList.toggle('btn-pressed')
-
+        dateTimeSection.classList.remove("greyOut")
+        dateTimeSection.removeAttribute("disabled")
     } else if (ankomstBtn.classList.contains('btn-pressed')) {
         return
     }
 })
+
+function clearAllFields() {
+        startInput.value = ''
+        endInput.value = ''
+        dateSelection.value = ""
+        hourSelection.value = ""
+        minSelection.value = ""
+}
 
 //The function that runs when pressing the "tillval" button
 function toFilter() {
     if (startCoords != null && endCoords != null && åkNuBtn.classList.contains('btn-pressed')) {
         åkNu()
         location.href = 'filter.html'
+        clearAllFields()
     } else if (startCoords != null && endCoords != null && avgångBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
         avgång()
         location.href = 'filter.html'
+        clearAllFields()
     } else if (startCoords != null && endCoords != null && ankomstBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
         ankomst()
         location.href = 'filter.html'
+        clearAllFields()
     } else {
         alert("Pls fill all fields")
     }
-    //Clears all the fields after moving on
-    startInput.value = ''
-    endInput.value = ''
-    dateSelection.value = ""
-    hourSelection.value = ""
-    minSelection.value = ""
 }

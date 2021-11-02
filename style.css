@@ -76,7 +76,7 @@ body {
     border-radius: 30px;
 }
 
-.time-section {
+.time-buttons {
     width: 100%;
     height: 50%;
     display: flex;
@@ -92,7 +92,7 @@ body {
     box-sizing: border-box;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 35px;
-    color: lightgray;
+    color: #ebebeb;
 }
 
 .time-btn:hover {
@@ -108,6 +108,11 @@ body {
     box-shadow: inset 0px 7px 7px rgba(0, 0, 0, 0.5); 
 }
 
+.btn-pressed:hover {
+    border: 1px solid #C4C4C4;
+    cursor: default;
+}
+
 #departure-section {
     margin-bottom: 120px;
 }
@@ -118,10 +123,15 @@ body {
     background: #4D8C2D;
     display: flex;
     align-items: center;
+    justify-content: space-around;
+    border: none;
+    border-radius: 10px;
 }
 
 #time-select {
     display: flex;
+    align-items: center;
+    color: #ebebeb;
 }
 
 #map {
@@ -184,7 +194,58 @@ body {
     justify-content: space-between;
 }
 
+/* Inactive style for the date, hour and min pickers */
+.greyOut {
+    background: #728a66 !important;
+}
+/* When the 'inactive class is on the div, the pickers will not have the default cursor  */
+.greyOut #dates, .greyOut #hours, .greyOut #mins {
+    cursor: default;
+}
 
+#dates {
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    color: #ebebeb;
+    background: #00000000;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 35px;
+    cursor: pointer;
+}
+
+#hours, #mins {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    color: #ebebeb;
+    background: #00000000;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 35px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.date-options, .hour-options, .min-options{
+    background-color: #4D8C2D;
+    cursor: pointer;
+}
+
+#hours::-webkit-scrollbar, #mins::-webkit-scrollbar {
+    width: 10px;
+    background-color: #4D8C2D;
+}
+
+#hours::-webkit-scrollbar-thumb, #mins::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+}
+
+/* Media query for keeping the same styling always for the input fields/ geocoders */
 @media screen and (min-width: 640px) {
     .mapboxgl-ctrl-geocoder--input {
         height: 50px !important;
