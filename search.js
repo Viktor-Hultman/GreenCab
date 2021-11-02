@@ -52,34 +52,52 @@ document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
 
 //Date and time picker code below
 
-//Function for adding the current time to the "today" object
+//Functions for adding the selected departure/ arrival time to the local storage, to use later
 function åkNu() {
     let nowTime = new Date();
     let hours = nowTime.getHours()
     let mins = nowTime.getMinutes()
-    if(hours < 10) {
+    if (hours < 10) {
         hours = "0" + hours
     }
-    if(mins < 10) {
+    if (mins < 10) {
         mins = "0" + mins
     }
-    today.time = hours + ":" + mins;
-    localStorage.setItem("tripTime-Date", JSON.stringify(today))
+    let åkNuTime = {
+        type: "Åk nu",
+        date: `${nowTime.getDay()}, ${nowTime.getDate()} ${nowTime.getMonth()}`,
+        time: hours + ":" + mins
+    }
+    localStorage.setItem("tripTime-Date", JSON.stringify(åkNuTime))
 }
 
-//To use when pressing the "Tillval" button
-// if (åkNuBtn.classList.contains('btn-pressed')) {
-//     getCurrentDate()
-//     let tripTimeObj = {
-//         time: "Åk nu",
-//         departure: dateTime
-//     }
-//     localStorage.setItem("time", JSON.stringify(tripTimeObj))
-// }
+function avgång() {
+    let hours = localStorage.getItem("hour")
+    let mins = localStorage.getItem("min")
+
+    let avgångTime = {
+        type: "Avgång",
+        date: localStorage.getItem("date"),
+        time: hours + ":" + mins
+    }
+    localStorage.setItem("tripTime-Date", JSON.stringify(avgångTime))
+}
+
+function ankomst() {
+    let hours = localStorage.getItem("hour")
+    let mins = localStorage.getItem("min")
+
+    let ankomstTime = {
+        type: "Ankomst",
+        date: localStorage.getItem("date"),
+        time: hours + ":" + mins
+    }
+    localStorage.setItem("tripTime-Date", JSON.stringify(ankomstTime))
+}
+
 
 //The full date of when this line of code runs
 let fullDate = new Date();
-
 //Creates new objects with using some of the dates
 let today = {
     day: fullDate.getDay(),
@@ -120,8 +138,6 @@ fourDaysFromNow = {
     dayOfMonth: fourDays.getDate(),
     month: fourDays.getMonth()
 }
-
-// `${fullDate.getDay()}-${fullDate.getDate()}-${fullDate.getMonth()}`
 
 
 //This function loops through the days of the week and the months of the year
@@ -200,7 +216,6 @@ function createTimePickers() {
             minSelectOptions.push([i]);
         }
     }
-    // console.log(hourSelectOptions)
 
     //Creating a select element and giving it a name and date attribute
     let hourSelect = document.createElement("select");
@@ -255,27 +270,33 @@ function createTimePickers() {
     document.getElementById("time-select").appendChild(pointH3);
     document.getElementById("time-select").appendChild(minSelect);
 }
-
 //Creates the datePicker and timePickers
 createDatePicker()
 createTimePickers()
 
-localStorage.setItem("tripTime-Date", JSON.stringify(today))
-
+// Targeting the date, hour and min select dropdowns
 const dateSelection = document.getElementById("dates");
 const hourSelection = document.getElementById("hours");
 const minSelection = document.getElementById("mins");
 
-dateSelection.addEventListener('change', function() {
+// Global variables
+let dateSelected = false
+let hourSelected = false
+let minSelected = false
+
+dateSelection.addEventListener('change', function () {
     localStorage.setItem("date", this.value);
+    dateSelected = true
 })
 
-hourSelection.addEventListener('change', function() {
+hourSelection.addEventListener('change', function () {
     localStorage.setItem("hour", this.value);
+    hourSelected = true
 })
 
-minSelection.addEventListener('change', function() {
+minSelection.addEventListener('change', function () {
     localStorage.setItem("min", this.value);
+    minSelected = true
 })
 
 //Targeting the "my position" button/icon
@@ -402,6 +423,7 @@ const endGeo = document.getElementById('geocoder-end')
 
 //Specific targeting for the elements that the geocoders produce after loading the page
 const startInput = startGeo.getElementsByTagName('input')[0];
+const endInput = endGeo.getElementsByTagName('input')[0];
 const startSugg = startGeo.getElementsByTagName('ul')[0];
 
 //Function for hiding the second geocoder/searchfield because it overlapped the "suggestions" from the first searchfield
@@ -427,42 +449,10 @@ startInput.addEventListener("blur", function () {
 
 })
 
-
 //Targeting elements
 const åkNuBtn = document.getElementById('åk-nu')
 const avgångBtn = document.getElementById('avgång')
 const ankomstBtn = document.getElementById('ankomst')
-
-function toFilter() {
-    if(startCoords != null && endCoords != null && åkNuBtn.classList.contains('btn-pressed')) {
-        åkNu()
-        location.href = 'filter.html'
-    } else {
-        alert("Pls fill all fields")
-    }
-    
-}
-
-// let tripTimeArr = []
-// let departure
-
-// function getCurrentDate() {
-//     let today = new Date();
-//     let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-//     let time = today.getHours() + ":" + today.getMinutes();
-//     departure = date + ' ' + time;
-// }
-
-//To use when pressing the "Tillval" button
-// if (åkNuBtn.classList.contains('btn-pressed')) {
-//     getCurrentDate()
-//     let tripTimeObj = {
-//         time: "Åk nu",
-//         departure: dateTime
-//     }
-//     localStorage.setItem("time", JSON.stringify(tripTimeObj))
-// }
-
 
 //The following eventListeners are for toggeling a specific css style between 3 buttons (only 1 should be "active")
 åkNuBtn.addEventListener("click", function () {
@@ -486,7 +476,7 @@ avgångBtn.addEventListener("click", function () {
 
     } else if (ankomstBtn.classList.contains('btn-pressed')) {
         ankomstBtn.classList.toggle('btn-pressed')
-        åkNuBtn.classList.toggle('btn-pressed')
+        avgångBtn.classList.toggle('btn-pressed')
 
     } else if (avgångBtn.classList.contains('btn-pressed')) {
         return
@@ -506,3 +496,25 @@ ankomstBtn.addEventListener("click", function () {
         return
     }
 })
+
+//The function that runs when pressing the "tillval" button
+function toFilter() {
+    if (startCoords != null && endCoords != null && åkNuBtn.classList.contains('btn-pressed')) {
+        åkNu()
+        location.href = 'filter.html'
+    } else if (startCoords != null && endCoords != null && avgångBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
+        avgång()
+        location.href = 'filter.html'
+    } else if (startCoords != null && endCoords != null && ankomstBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
+        ankomst()
+        location.href = 'filter.html'
+    } else {
+        alert("Pls fill all fields")
+    }
+    //Clears all the fields after moving on
+    startInput.value = ''
+    endInput.value = ''
+    dateSelection.value = ""
+    hourSelection.value = ""
+    minSelection.value = ""
+}
