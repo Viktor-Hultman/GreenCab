@@ -231,7 +231,7 @@ body {
 .greyOut {
     background: #728a66 !important;
 }
-/* When the 'inactive class is on the div, the pickers will not have the default cursor  */
+/* When the 'inactive'/ 'greyOut class is on the div, the pickers will not have the default cursor  */
 .greyOut #dates, .greyOut #hours, .greyOut #mins {
     cursor: default;
 }
@@ -420,6 +420,22 @@ body {
     display: flex;
     align-items: center;
 }
+
+.greyOut-btn {
+    background: linear-gradient(180deg, #AAAAAA 0%, #727272 100%);
+    box-shadow: none;
+    color: rgb(56, 56, 56);
+}
+
+.greyOut-btn:hover {
+    cursor: default;
+    border: 1px solid #C4C4C4;
+}
+
+.greyOut-btn:active {
+    box-shadow: none;
+}
+
 
 /* Media query for keeping the same styling always for the input fields/ geocoders */
 @media screen and (min-width: 640px) {

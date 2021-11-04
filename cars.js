@@ -161,11 +161,14 @@ createFilteredCarsList()
 
 let carOptions = document.querySelectorAll(".car-list-item")
 
+let bookingButton = document.getElementById("booking-btn");
+
 carOptions.forEach(item => {
     item.addEventListener('click', evt => {
         if (item.classList.contains("clicked-car")) {
             item.classList.toggle("clicked-car");
             choosenCar = null
+            bookingButton.classList.add("greyOut-btn")
         } else {
             carOptions.forEach(item => {
                 if (item.classList.contains("clicked-car")) {
@@ -173,6 +176,7 @@ carOptions.forEach(item => {
                 }
             })
             item.classList.add("clicked-car")
+            bookingButton.classList.remove("greyOut-btn")
             choosenCar = item.id
         }
     })
