@@ -65,7 +65,7 @@ function åkNu() {
     }
     let åkNuTime = {
         type: "Åk nu",
-        date: `${nowTime.getDay()}, ${nowTime.getDate()} ${nowTime.getMonth()}`,
+        date: `${today.day}, ${today.dayOfMonth} ${today.month}`,
         time: hours + ":" + mins
     }
     localStorage.setItem("tripTime-Date", JSON.stringify(åkNuTime))
@@ -510,11 +510,11 @@ ankomstBtn.addEventListener("click", function () {
 })
 
 function clearAllFields() {
-        startInput.value = ''
-        endInput.value = ''
-        dateSelection.value = ""
-        hourSelection.value = ""
-        minSelection.value = ""
+    startInput.value = ''
+    endInput.value = ''
+    dateSelection.value = ""
+    hourSelection.value = ""
+    minSelection.value = ""
 }
 
 //The function that runs when pressing the "tillval" button

@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="index.js" defer></script>
+    <script src="filter.js" defer></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     </script>
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+        type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap" rel="stylesheet">
@@ -19,7 +22,69 @@
 
 <body>
     <div id="background">
-        Hello!
+        <div id="filter-window">
+            <section id="tillval-general-info" class="section">
+                <h1>Tillval</h1>
+                <p>Här kan du välja vilka krav du har på din resa, dina val kommer att påverka utbudet av resor vi kan
+                    erbjuda!</p>
+            </section>
+            <section id="tillval-window" class="section">
+                <div class="tillval-container" id="djurvänligBil">
+                    <div class="tillval-icon" id="tillval-animal-icon">X</div>
+                    <div class="tillval-info noselect">
+                        <h3>Djurvänlig bil</h3>
+                        <p>Dessa bilar tillåter djur</p>
+                    </div>
+                    <div class="tillval-choosing">
+                        <div class="checkbox"></div>
+                    </div>
+                </div>
+                <div class="tillval-container" id="handikappanpassad">
+                    <div class="tillval-icon" id="tillval-animal-icon">X</div>
+                    <div class="tillval-info noselect">
+                        <h3>Handikappanpassad</h3>
+                        <p>Bilar som möjliggör transport för rullstolsbundna</p>
+                    </div>
+                    <div class="tillval-choosing">
+                        <div class="checkbox"></div>
+                    </div>
+                </div>
+                <div class="tillval-container" id="stortBagage">
+                    <div class="tillval-icon" id="tillval-animal-icon">X</div>
+                    <div class="tillval-info noselect">
+                        <h3>Stort bagage</h3>
+                        <p>Bilar med större utrymme för bagage</p>
+                    </div>
+                    <div class="tillval-choosing">
+                        <div class="checkbox"></div>
+                    </div>
+                </div>
+                <div class="tillval-container" id="bälteskudde">
+                    <div class="tillval-icon" id="tillval-animal-icon">X</div>
+                    <div class="tillval-info noselect">
+                        <h3>Bälteskudde</h3>
+                        <p>Sittkudde för barn från 4 år, under 135 cm</p>
+                    </div>
+                    <div class="tillval-choosing">
+                        <div class="checkbox"></div>
+                    </div>
+                </div>
+                <div class="tillval-container" id="bilbarnstol">
+                    <div class="tillval-icon" id="tillval-animal-icon">X</div>
+                    <div class="tillval-info noselect">
+                        <h3>Bilbarnstol</h3>
+                        <p>För barn mellan 6 mån - 4 år, max 25 kg</p>
+                    </div>
+                    <div class="tillval-choosing">
+                        <div class="checkbox"></div>
+                    </div>
+                </div>
+                
+            </section>
+            <section class="section">
+                <button class="continue-btn" id="tillval-btn" onclick="toCars()">Fordon</button>
+            </section>
+        </div>
     </div>
 </body>
 
