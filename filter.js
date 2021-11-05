@@ -13,7 +13,21 @@ localStorage.setItem("filter", JSON.stringify(tillvalObj))
 
 //Adding evtListeners to all the 'tillval' options
 tillvalContainers.forEach(item => {
+    let itemCheckbox = item.lastElementChild.firstElementChild
+    //Listeners that add hover effect to the checkboxes in the 'tillval' options
+    item.addEventListener('mouseover', evt => {
+        if(itemCheckbox.classList.contains("checked")) {
+            return;
+        } else {
+            itemCheckbox.classList.add("checkbox-hover")
+        } 
+    })
+    item.addEventListener('mouseout', evt => {
+        itemCheckbox.classList.remove("checkbox-hover")
+    })
+
     item.addEventListener('click', evt => {
+        itemCheckbox.classList.toggle("checkbox-hover")
         //Adds the 'checked' class to the clicked option
         item.lastElementChild.firstElementChild.classList.toggle("checked")
         //Placing the id of the option in a variable

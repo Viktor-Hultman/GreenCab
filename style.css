@@ -71,9 +71,14 @@ body {
     border-radius: 30px;
 }
 
+#button-section {
+    min-height: 100px;
+    max-height: 100px;
+}
+
 .section {
     width: 90%;
-    height: 30%;
+    min-height: 30%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,7 +152,7 @@ body {
 }
 
 #departure-section {
-    margin-bottom: 120px;
+    margin-bottom: 200px;
 }
 
 #date-time-picker {
@@ -159,6 +164,7 @@ body {
     justify-content: space-around;
     border: none;
     border-radius: 10px;
+    margin-bottom: 50px;
 }
 
 #time-select {
@@ -293,8 +299,8 @@ body {
 }
 
 #tillval-window {
-    width: 90%;
-    height: 90%;
+    max-width: 90%;
+    max-height: 90%;
     background: #DCEAD0;
     border: 1px solid rgba(71, 142, 35, 0.41);
     box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
@@ -303,18 +309,29 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    overflow-y: scroll;
+    padding-top: 30px;
+}
+
+#tillval-window::-webkit-scrollbar {
+    width: 0px;
 }
 
 .tillval-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 90%;
+    width: 100%;
     border-bottom: 1px solid rgba(71, 142, 35, 0.41);
 }
 
-.tillval-icon {
+.tillval-icon-div {
     width: 15%;
+    padding-left: 10px;
+}
+
+.tillval-icon {
+    width: 100%;
 }
 
 .tillval-info {
@@ -344,10 +361,16 @@ body {
     height: 15px;
     border: 3px solid slategrey;
     border-radius: 5px;
+    box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
+    margin-right: 5px;
 }
 
 .checked {
-    background-color: rgb(0, 177, 177);
+    background: #8CC96D;
+}
+
+.checkbox-hover {
+    background: #bdc9b3;
 }
 
 #carMap {
@@ -376,6 +399,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#car-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+#car-list::-webkit-scrollbar-track {
+    background: #65ad41;
+}
+
+#car-list::-webkit-scrollbar-thumb {
+    width: 10px;
+    background: #355a22;
 }
 
 .car-list-item {
@@ -436,6 +472,25 @@ body {
     box-shadow: none;
 }
 
+#instructions {
+    position: relative;
+    right: 140px;
+    padding: 6px;
+    bottom: 230px;
+    background-color: #DCEAD0;
+    text-align: center;
+    border-radius: 30px;
+    margin-top: -30px;
+}
+
+#instructions h4 {
+    margin: 0px;
+    height: 19px;
+}
+
+.invisible {
+    display: none;
+}
 
 /* Media query for keeping the same styling always for the input fields/ geocoders */
 @media screen and (min-width: 640px) {
@@ -456,3 +511,18 @@ body {
         height: 23px !important;
     }
 }
+
+/* @media screen and (max-height: 750px) {
+    .view-window {
+        max-height: 650;
+        overflow-y: scroll;
+    }
+
+    .mapboxgl-map-canvas {
+        position: inherit !important;
+    }
+
+    .mapboxgl-map {
+        overflow: visible !important;
+    }
+} */

@@ -40,17 +40,228 @@ geocoderStart.on('result', ({ result }) => {
     console.log(result.center);
     startCoords = result.center
     localStorage.setItem("start", JSON.stringify(startCoords))
+    //If the endcoords already have been set then the 'getTrip' func can run with both coords
+    if(endCoords != null) {
+        getTrip();
+    }
 });
 
 geocoderEnd.on('result', ({ result }) => {
     console.log(result.center);
     endCoords = result.center
     localStorage.setItem("end", JSON.stringify(endCoords))
+    //If the startcoords already have been set then the 'getTrip' func can run with both coords
+    if(startCoords != null) {
+        getTrip();
+    }
 });
 
 //Here I append the geocoders above to my div elements in order to place the geocoders outside of the map/ in a custom location
 document.getElementById('geocoder-start').appendChild(geocoderStart.onAdd(map));
 document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
+
+//Targeting the "my position" button/icon
+const posbtn = document.getElementById('my-pos-icon');
+
+//Eventlistener for the "my position" button
+posbtn.addEventListener("click", function () {
+    //The code ask the user if it can use their location, if yes then the "sucessLocation" func will run
+    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+        enableHighAccuracy: true
+    });
+})
+
+let posMarker
+let startCoords = null
+let endCoords = null
+let centerOfTrip = []
+let tripDuration
+let tripDistance
+let mapZoom = 11
+const fromInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[0];
+const toInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[1];
+const fromClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[0];
+const toClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[1];
+
+//Adding event for clear button
+fromClearBtn.addEventListener('click', function () {
+    if (posMarker != undefined)
+        //Removes the "my position" marker
+        posMarker.remove()
+    posMarker = undefined
+    //Removes the start location from local storage
+    localStorage.removeItem("start")
+    startCoords = null
+})
+
+//Adding event for clear button
+toClearBtn.addEventListener('click', function () {
+    //Removes the end location from local storage
+    localStorage.removeItem("end")
+    endCoords = null
+})
+
+//If the user allow the program to use their location, this function runs
+function successLocation(position) {
+    //Checks if a starting position marker exist
+    if (posMarker == undefined && geocoderStart.mapMarker == null) {
+        //Saves the users position as the starting coordinates and adds them to a variable
+        startCoords = [position.coords.longitude, position.coords.latitude]
+        // checkboxStart.checked = true
+        console.log(startCoords)
+        //Creates a new marker and places it on the map with the users position
+        posMarker = new mapboxgl.Marker({
+            color: "#4D8C2D"
+        })
+            .setLngLat(startCoords)
+            .addTo(map);
+        //The map then centers on the users position
+        map.flyTo({
+            center: startCoords,
+            zoom: 12,
+            bearing: 0
+        })
+        //Sets the value of the "from inputfield" to the users coords to show it worked
+        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
+        //The "X" button in the field is displayed to able the user to remove the value of the field
+        fromClearBtn.style = 'display: block;'
+
+        //The else statement does the same as the above one, exept it also removes the previous "starting" marker from the map first
+    } else if (posMarker != undefined) {
+        posMarker.remove()
+        posMarker = undefined
+
+        startCoords = [position.coords.longitude, position.coords.latitude]
+        // checkboxStart.checked = true
+        console.log(startCoords)
+
+        posMarker = new mapboxgl.Marker({
+            color: "#4D8C2D"
+        })
+            .setLngLat(startCoords)
+            .addTo(map);
+
+        map.flyTo({
+            center: startCoords,
+            zoom: 12,
+            bearing: 0
+        })
+
+        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
+        fromClearBtn.style = 'display: block;'
+
+        //Lastly, does the same as the above statements, exept removes the marker that the geocoder creates
+    } else {
+        //Targets and removes the marker that the "start" geocoder created
+        geocoderStart.mapMarker.remove()
+
+        startCoords = [position.coords.longitude, position.coords.latitude]
+        // checkboxStart.checked = true
+        console.log(startCoords)
+
+        posMarker = new mapboxgl.Marker({
+            color: "#4D8C2D"
+        })
+            .setLngLat(startCoords)
+            .addTo(map);
+
+        map.flyTo({
+            center: startCoords,
+            zoom: 12,
+            bearing: 0
+        })
+
+        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
+        fromClearBtn.style = 'display: block;'
+    }
+    localStorage.setItem("start", JSON.stringify(startCoords))
+
+    //If the endcoords already have been set then the 'getTrip' func can run with both coords
+    if(endCoords != null) {
+        getTrip();
+    }
+}
+
+//If the user does not allow the program to use their location. The button does nothing
+function errorLocation() {
+    return
+}
+
+//Targeting the 'from' and 'to' input field divs
+const startGeo = document.getElementById('geocoder-start')
+const endGeo = document.getElementById('geocoder-end')
+
+//Specific targeting for the elements that the geocoders produce after loading the page
+const startInput = startGeo.getElementsByTagName('input')[0];
+const endInput = endGeo.getElementsByTagName('input')[0];
+const startSugg = startGeo.getElementsByTagName('ul')[0];
+
+//Function for hiding the second geocoder/searchfield because it overlapped the "suggestions" from the first searchfield
+startInput.addEventListener('input', function () {
+    //A setTimeout for timing with the api "fetching" of the suggestions
+    setTimeout(function () {
+        if (startSugg.getAttribute("style") == 'display: block;') {
+            endGeo.classList.add('hide')
+            console.log("now the suggestions show")
+        } else {
+            endGeo.classList.remove('hide')
+            console.log("now the suggestions are hidden")
+        }
+    }, 300)
+})
+
+//Function to "unhide" the second searchfield when a suggestion is picked
+startInput.addEventListener("blur", function () {
+    //SetTimeout for timing
+    setTimeout(function () {
+        endGeo.classList.remove('hide')
+    }, 80)
+
+})
+
+//Function for calculating amount of zoom on the map that is needed depending on the trip duration
+function calcMapZoom(dist) {
+    if (dist < 5) {
+        mapZoom = 11
+    } else if (dist < 10) {
+        mapZoom = 10
+    } else if (dist < 15) {
+        mapZoom = 9
+    } else if (dist < 30) {
+        mapZoom = 8.7
+    } else if (dist < 50) {
+        mapZoom = 8.5
+    } else if (dist < 60) {
+        mapZoom = 8.3
+    }else if (dist < 70) {
+        mapZoom = 8.1
+    } else if (dist < 90) {
+        mapZoom = 8
+    } else if (dist < 150) {
+        mapZoom = 7
+    } else {
+        mapZoom = 6
+    }
+    localStorage.setItem("tripDistance", tripDistance);
+    localStorage.setItem("mapZoom", mapZoom)
+    console.log(tripDistance)
+    console.log(mapZoom)
+}
+
+//This async function is for getting the route for the trip and then find the distance
+async function getTrip() {
+    const query = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${startCoords[0]},${startCoords[1]};${endCoords[0]},${endCoords[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+        { method: 'GET' }
+    );
+    const json = await query.json();
+    const data = json.routes[0];
+
+    // tripDuration = Math.round(data.duration / 60)
+    tripDistance = Number((data.distance / 1000).toFixed(1))
+
+    calcMapZoom(tripDistance)
+}
 
 //Date and time picker code below
 
@@ -277,6 +488,7 @@ function createTimePickers() {
     document.getElementById("time-select").appendChild(pointH3);
     document.getElementById("time-select").appendChild(minSelect);
 }
+
 //Creates the datePicker and timePickers
 createDatePicker()
 createTimePickers()
@@ -304,156 +516,6 @@ hourSelection.addEventListener('change', function () {
 minSelection.addEventListener('change', function () {
     localStorage.setItem("min", this.value);
     minSelected = true
-})
-
-//Targeting the "my position" button/icon
-const posbtn = document.getElementById('my-pos-icon');
-
-//Eventlistener for the "my position" button
-posbtn.addEventListener("click", function () {
-    //The code ask the user if it can use their location, if yes then the "sucessLocation" func will run
-    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
-        enableHighAccuracy: true
-    });
-})
-
-let posMarker
-let startCoords = null
-let endCoords = null
-let fromInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[0];
-let toInput = document.querySelectorAll(".mapboxgl-ctrl-geocoder--input")[1];
-let fromClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[0];
-let toClearBtn = document.querySelectorAll(".mapboxgl-ctrl-geocoder--button")[1];
-
-//Adding event for clear button
-fromClearBtn.addEventListener('click', function () {
-    if (posMarker != undefined)
-        //Removes the "my position" marker
-        posMarker.remove()
-    posMarker = undefined
-    //Removes the start location from local storage
-    localStorage.removeItem("start")
-    startCoords = null
-})
-
-//Adding event for clear button
-toClearBtn.addEventListener('click', function () {
-    //Removes the end location from local storage
-    localStorage.removeItem("end")
-    endCoords = null
-})
-
-//If the user allow the program to use their location, this function runs
-function successLocation(position) {
-    //Checks if a starting position marker exist
-    if (posMarker == undefined && geocoderStart.mapMarker == null) {
-        //Saves the users position as the starting coordinates and adds them to a variable
-        startCoords = [position.coords.longitude, position.coords.latitude]
-        // checkboxStart.checked = true
-        console.log(startCoords)
-        //Creates a new marker and places it on the map with the users position
-        posMarker = new mapboxgl.Marker({
-            color: "#4D8C2D"
-        })
-            .setLngLat(startCoords)
-            .addTo(map);
-        //The map then centers on the users position
-        map.flyTo({
-            center: startCoords,
-            zoom: 12,
-            bearing: 0
-        })
-        //Sets the value of the "from inputfield" to the users coords to show it worked
-        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
-        //The "X" button in the field is displayed to able the user to remove the value of the field
-        fromClearBtn.style = 'display: block;'
-
-        //The else statement does the same as the above one, exept it also removes the previous "starting" marker from the map first
-    } else if (posMarker != undefined) {
-        posMarker.remove()
-        posMarker = undefined
-
-        startCoords = [position.coords.longitude, position.coords.latitude]
-        // checkboxStart.checked = true
-        console.log(startCoords)
-
-        posMarker = new mapboxgl.Marker({
-            color: "#4D8C2D"
-        })
-            .setLngLat(startCoords)
-            .addTo(map);
-
-        map.flyTo({
-            center: startCoords,
-            zoom: 12,
-            bearing: 0
-        })
-
-        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
-        fromClearBtn.style = 'display: block;'
-
-        //Lastly, does the same as the above statements, exept removes the marker that the geocoder creates
-    } else {
-        //Targets and removes the marker that the "start" geocoder created
-        geocoderStart.mapMarker.remove()
-
-        startCoords = [position.coords.longitude, position.coords.latitude]
-        // checkboxStart.checked = true
-        console.log(startCoords)
-
-        posMarker = new mapboxgl.Marker({
-            color: "#4D8C2D"
-        })
-            .setLngLat(startCoords)
-            .addTo(map);
-
-        map.flyTo({
-            center: startCoords,
-            zoom: 12,
-            bearing: 0
-        })
-
-        fromInput.value = `${startCoords[1]}, ${startCoords[0]}`
-        fromClearBtn.style = 'display: block;'
-    }
-
-    localStorage.setItem("start", JSON.stringify(startCoords))
-}
-
-function errorLocation() {
-    return
-}
-
-//Targeting some elements
-const startGeo = document.getElementById('geocoder-start')
-const endGeo = document.getElementById('geocoder-end')
-
-//Specific targeting for the elements that the geocoders produce after loading the page
-const startInput = startGeo.getElementsByTagName('input')[0];
-const endInput = endGeo.getElementsByTagName('input')[0];
-const startSugg = startGeo.getElementsByTagName('ul')[0];
-
-//Function for hiding the second geocoder/searchfield because it overlapped the "suggestions" from the first searchfield
-startInput.addEventListener('input', function () {
-    //A setTimeout for timing with the api "fetching" of the suggestions
-    setTimeout(function () {
-        if (startSugg.getAttribute("style") == 'display: block;') {
-            endGeo.classList.add('hide')
-            console.log("now the suggestions show")
-        } else {
-            endGeo.classList.remove('hide')
-            console.log("now the suggestions are hidden")
-        }
-    }, 300)
-})
-
-//Function to "unhide" the second searchfield when a suggestion is picked
-startInput.addEventListener("blur", function () {
-    //SetTimeout for timing
-    setTimeout(function () {
-        endGeo.classList.remove('hide')
-    }, 80)
-
 })
 
 //Targeting elements
