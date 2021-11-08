@@ -259,7 +259,6 @@ async function getTrip() {
 
     // tripDuration = Math.round(data.duration / 60)
     tripDistance = Number((data.distance / 1000).toFixed(1))
-
     calcMapZoom(tripDistance)
 }
 

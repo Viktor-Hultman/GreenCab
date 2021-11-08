@@ -24,8 +24,8 @@ body {
     justify-content: center;
 }
 
-#landing-window {
-    width: 420px;
+.view-window {
+    width: 400px;
     height: 90%;
     display: flex;
     flex-direction: column;
@@ -36,39 +36,21 @@ body {
     border-radius: 30px;
 }
 
-#search-window {
-    width: 400px;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid rgba(71, 142, 35, 0.41);
-    box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
-    border-radius: 30px;
+
+#landing-window {
+    width: 420px;
 }
 
 #filter-window {
-    width: 400px;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: space-around;
-    border: 1px solid rgba(71, 142, 35, 0.41);
-    box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
-    border-radius: 30px;
 }
 
 #cars-window {
-    width: 400px;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid rgba(71, 142, 35, 0.41);
-    box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
-    border-radius: 30px;
+    justify-content: center;
+}
+
+#cart-window {
+    justify-content: center;
 }
 
 #button-section {
@@ -103,6 +85,7 @@ body {
     left: 50%;
     transform: translate(-50%, 0);
     font-size: 18px;
+    z-index: 3;
 }
 
 .continue-btn:hover {
@@ -325,6 +308,15 @@ body {
     border-bottom: 1px solid rgba(71, 142, 35, 0.41);
 }
 
+.tillval-container:hover {
+    cursor: pointer;
+}
+
+.tillval-container:hover .checkbox{
+    background: #bdc9b3;
+    border: 3.5px solid slategrey;
+}
+
 .tillval-icon-div {
     width: 15%;
     padding-left: 10px;
@@ -366,12 +358,9 @@ body {
 }
 
 .checked {
-    background: #8CC96D;
+    background: #8CC96D !important;
 }
 
-.checkbox-hover {
-    background: #bdc9b3;
-}
 
 #carMap {
     width: 100%;
@@ -490,6 +479,76 @@ body {
 
 .invisible {
     display: none;
+}
+
+#purchase-cart {
+    width: 80%;
+    height: 85%;
+    text-align: center;
+    background: rgba(230, 233, 228, 0.8) ;
+    border: 1px solid rgba(71, 142, 35, 0.41);
+    box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
+    border-radius: 30px;
+    margin: 30px 0px 100px 0px;
+    z-index: 3;
+    font-family: 'Roboto', sans-serif;
+}
+
+#purchase-cart p {
+    font-size: 16px;
+}
+
+.cart-section {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+#chosenFilter {
+    list-style: none;
+    padding: 0px;
+}
+
+.chosenFilterItem {
+    text-align: start;
+}
+
+#cost-calc p {
+    text-align: end;
+}
+
+#discount {
+    margin: 10px;
+}
+
+#reservationMap {
+    width: 100%;
+    height: 70%;
+    box-shadow: 2px 4px 4px rgba(11, 63, 10, 0.22);
+    border-radius: 30px 30px 0px 0px;
+}
+
+#reservationInfo {
+    width: 100%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#carArrival {
+    margin-bottom: 10px;
+    padding: 0px 50px 0px 50px;
+}
+
+#tripInfo {
+    padding: 0px 50px 0px 50px;
+    text-align: center;
 }
 
 /* Media query for keeping the same styling always for the input fields/ geocoders */

@@ -1,12 +1,13 @@
 //Token for accessing/ using the api
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlrdG9yaHVsdG1hbiIsImEiOiJja3RzZmIxcnkxZm84MnVtcHNlZm5oMnJvIn0.YoorBwfMIiBKtJ7kNaXn3Q';
 
+let tripDistance = localStorage.getItem("tripDistance")
 
 //All the cars that are offered
 let cars = [
     standard = {
         title: "Standard",
-        price: "200 kr",
+        price: Math.round(120 + (8.5 * tripDistance)) ,
         description: "Vårt standardalternativ med 100% garanti att få en elbil för din resa. Max 4 passagerere.",
         img: "imgs/standardCar.png",
         djurvänligBil: true,
@@ -17,7 +18,7 @@ let cars = [
     },
     XL = {
         title: "XL",
-        price: "300 kr",
+        price: Math.round(160 + (13 * tripDistance)),
         description: "En större miljövänlig bil med plats för max 7 passagerare.",
         img: "imgs/xlCar.png",
         djurvänligBil: true,
@@ -28,7 +29,7 @@ let cars = [
     },
     guld = {
         title: "Guld",
-        price: "400 kr",
+        price: Math.round(230 + (18 * tripDistance)),
         description: "Ett lite lyxigare alternativ för den som vill resa med stil. Max 4 passagerare.",
         img: "imgs/goldCar.png",
         djurvänligBil: false,
@@ -39,7 +40,7 @@ let cars = [
     },
     allergi = {
         title: "Allergi",
-        price: "250 kr",
+        price: Math.round(170 + (8.5 * tripDistance)),
         description: "För dig som har allergi för pälsdjur, 100% pälsfritt fordon. Max 4 passagerare.",
         img: "imgs/allergyCar.png",
         djurvänligBil: false,
@@ -47,35 +48,19 @@ let cars = [
         stortBagage: false,
         bälteskudde: true,
         bilbarnstol: true
-    },
-    // festlig = {
-    //     title: "Festlig",
-    //     price: "200 kr",
-    //     description: "Vårt standardalternativ med 100% garanti att få en elbil för din resa.",
-    //     img: null
-    // }
+    }
+
 ];
 
 let userTillval = JSON.parse(localStorage.getItem("filter"));
 
-// let listCars = ["Standard", "XL", "Guld", "Allergi"]
-
 let removedCars
 
 function filterCars() {
-    // userTillval.forEach(item => {
-    //     console.log(item)
-    // })
     let tillval = []
     for (const [key, value] of Object.entries(userTillval)) {
         tillval.push(`${key}: ${value}`)
     }
-
-    // djurvänligBil: true,
-    //     handikappanpassad: false,
-    //     stortBagage: false,
-    //     bälteskudde: true,
-    //     bilbarnstol: true
 
     if (tillval.includes('djurvänligBil: true')) {
         //Removes the "Guld" and "Allegi" cars
@@ -144,7 +129,7 @@ function createFilteredCarsList() {
         carItem.id = `${val.title}`;
         carTitle.innerText = `${val.title}`;
         carDesc.innerText = `${val.description}`;
-        carPrice.innerText = `${val.price}`;
+        carPrice.innerText = `${val.price} kr`;
         carIcon.src = `${val.img}`;
 
         carIconDiv.appendChild(carIcon)
@@ -160,19 +145,19 @@ function createFilteredCarsList() {
     document.getElementById("filtered-cars").appendChild(carList);
 }
 
-let choosenCar = null
+let chosenCar = null
 
 createFilteredCarsList()
 
 let carOptions = document.querySelectorAll(".car-list-item")
 
-let bookingButton = document.getElementById("booking-btn");
+let bookingButton = document.getElementById("to-cart-btn");
 
 carOptions.forEach(item => {
     item.addEventListener('click', evt => {
         if (item.classList.contains("clicked-car")) {
             item.classList.toggle("clicked-car");
-            choosenCar = null
+            chosenCar = null
             bookingButton.classList.add("greyOut-btn")
         } else {
             carOptions.forEach(item => {
@@ -182,7 +167,7 @@ carOptions.forEach(item => {
             })
             item.classList.add("clicked-car")
             bookingButton.classList.remove("greyOut-btn")
-            choosenCar = item.id
+            chosenCar = item.id
         }
     })
 })
@@ -192,7 +177,6 @@ let startCoords = JSON.parse(localStorage.getItem("start"));
 let endCoords = JSON.parse(localStorage.getItem("end"));
 let centerOfTrip
 let tripDuration
-// let tripDistance = Number(localStorage.getItem("tripDistance"))
 let mapZoom = Number(localStorage.getItem("mapZoom"))
 
 //Function for calculating the center point of start and end coords
@@ -297,14 +281,24 @@ async function getRoute() {
             tripDuration
         )} min</h4>`;
     }
-    // tripDistance = Number((data.distance / 1000).toFixed(1))
 }
 
 
-
-function toBooking() {
-    if (choosenCar != null) {
-        localStorage.setItem("choosenCar", choosenCar)
+function toCart() {
+    if (chosenCar != null) {
+        if (chosenCar == "Standard") {
+            localStorage.setItem("chosenCar", JSON.stringify(standard))
+            
+        } else if (chosenCar == "XL") {
+            localStorage.setItem("chosenCar", JSON.stringify(XL))
+            
+        } else if (chosenCar == "Guld") {
+            localStorage.setItem("chosenCar", JSON.stringify(guld))
+            
+        } else if (chosenCar == "Allergi") {
+            localStorage.setItem("chosenCar", JSON.stringify(allergi))  
+        }
+        location.href = 'cart.html'
     } else {
         alert("Please choose a car to continue.")
     }

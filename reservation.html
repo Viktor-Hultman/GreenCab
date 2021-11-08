@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="cars.js" defer></script>
+    <script src="reservation.js" defer></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     </script>
@@ -22,11 +22,17 @@
 
 <body>
     <div id="background">
-        <div id="cars-window" class="view-window">
-            <div class="section" id="carMap"></div>
-            <div class="invisible" id="instructions"></div>
-            <section class="section" id="filtered-cars"></section>
-            <button class="continue-btn greyOut-btn " id="to-cart-btn" onclick="toCart()">Varukorg</button>
+        <div id="reservation-window" class="view-window">
+            <div id="reservationMap"></div>
+            <div id="reservationInfo">
+                <div id="carArrival">
+                    
+                </div>
+               
+                <div id="tripInfo">
+                    <p>Din bil har registreringsnummer: JHZ 686</p>
+                </div>
+            </div>
         </div>
     </div>
 </body>
