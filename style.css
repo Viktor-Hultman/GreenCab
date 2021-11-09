@@ -46,7 +46,7 @@ body {
 }
 
 #cars-window {
-    justify-content: center;
+    justify-content: normal;
 }
 
 #cart-window {
@@ -505,7 +505,6 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
 }
 
 #chosenFilter {
@@ -513,9 +512,6 @@ body {
     padding: 0px;
 }
 
-.chosenFilterItem {
-    text-align: start;
-}
 
 #cost-calc p {
     text-align: end;

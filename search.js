@@ -1,8 +1,13 @@
-
+// localStorage.clear()
 
 //Token for accessing/ using the api
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlrdG9yaHVsdG1hbiIsImEiOiJja3RzZmIxcnkxZm84MnVtcHNlZm5oMnJvIn0.YoorBwfMIiBKtJ7kNaXn3Q';
 
+let searchTripBtn = document.getElementById("search-btn")
+
+localStorage.setItem("detarture-set", "Åk nu")
+
+let getDeparture 
 //Setup of the map on the search page
 const map = new mapboxgl.Map({
     container: 'map', //Selecting the div with the id of 'map' as the maps location
@@ -33,6 +38,7 @@ let geocoderEnd = new MapboxGeocoder({
 });
 
 geocoderStart.on('result', ({ result }) => {
+    getDeparture = localStorage.getItem("detarture-set")
     if (posMarker != undefined) {
         posMarker.remove()
         posMarker = undefined
@@ -44,9 +50,13 @@ geocoderStart.on('result', ({ result }) => {
     if(endCoords != null) {
         getTrip();
     }
+    if(endCoords != null && getDeparture == "Åk nu" && searchTripBtn.classList.contains("greyOut-btn")) {
+        searchTripBtn.classList.remove("greyOut-btn")
+    }
 });
 
 geocoderEnd.on('result', ({ result }) => {
+    getDeparture = localStorage.getItem("detarture-set")
     console.log(result.center);
     endCoords = result.center
     localStorage.setItem("end", JSON.stringify(endCoords))
@@ -54,22 +64,14 @@ geocoderEnd.on('result', ({ result }) => {
     if(startCoords != null) {
         getTrip();
     }
+    if(startCoords != null && getDeparture == "Åk nu" && searchTripBtn.classList.contains("greyOut-btn")) {
+        searchTripBtn.classList.remove("greyOut-btn")
+    }
 });
 
 //Here I append the geocoders above to my div elements in order to place the geocoders outside of the map/ in a custom location
 document.getElementById('geocoder-start').appendChild(geocoderStart.onAdd(map));
 document.getElementById('geocoder-end').appendChild(geocoderEnd.onAdd(map));
-
-//Targeting the "my position" button/icon
-const posbtn = document.getElementById('my-pos-icon');
-
-//Eventlistener for the "my position" button
-posbtn.addEventListener("click", function () {
-    //The code ask the user if it can use their location, if yes then the "sucessLocation" func will run
-    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
-        enableHighAccuracy: true
-    });
-})
 
 let posMarker
 let startCoords = null
@@ -92,6 +94,7 @@ fromClearBtn.addEventListener('click', function () {
     //Removes the start location from local storage
     localStorage.removeItem("start")
     startCoords = null
+    searchTripBtn.classList.add("greyOut-btn")
 })
 
 //Adding event for clear button
@@ -99,6 +102,18 @@ toClearBtn.addEventListener('click', function () {
     //Removes the end location from local storage
     localStorage.removeItem("end")
     endCoords = null
+    searchTripBtn.classList.add("greyOut-btn")
+})
+
+//Targeting the "my position" button/icon
+const posbtn = document.getElementById('my-pos-icon');
+
+//Eventlistener for the "my position" button
+posbtn.addEventListener("click", function () {
+    //The code ask the user if it can use their location, if yes then the "sucessLocation" func will run
+    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+        enableHighAccuracy: true
+    });
 })
 
 //If the user allow the program to use their location, this function runs
@@ -505,16 +520,25 @@ let minSelected = false
 dateSelection.addEventListener('change', function () {
     localStorage.setItem("date", this.value);
     dateSelected = true
+    if (startCoords != null && endCoords != null && hourSelected == true && minSelected == true) {
+        searchTripBtn.classList.remove("greyOut-btn")
+    }
 })
 
 hourSelection.addEventListener('change', function () {
     localStorage.setItem("hour", this.value);
     hourSelected = true
+    if (startCoords != null && endCoords != null && dateSelected == true && minSelected == true) {
+        searchTripBtn.classList.remove("greyOut-btn")
+    }
 })
 
 minSelection.addEventListener('change', function () {
     localStorage.setItem("min", this.value);
     minSelected = true
+    if ( startCoords != null && endCoords != null && dateSelected == true && hourSelected == true) {
+        searchTripBtn.classList.remove("greyOut-btn")
+    }
 })
 
 //Targeting elements
@@ -538,6 +562,11 @@ const dateTimeSection = document.getElementById("date-time-picker")
     } else if (åkNuBtn.classList.contains('btn-pressed')) {
         return
     }
+    localStorage.setItem("detarture-set", "Åk nu")
+    if(startCoords != null && endCoords != null) {
+        searchTripBtn.classList.remove("greyOut-btn")
+    }
+    
 })
 
 avgångBtn.addEventListener("click", function () {
@@ -554,6 +583,10 @@ avgångBtn.addEventListener("click", function () {
     } else if (avgångBtn.classList.contains('btn-pressed')) {
         return
     }
+    localStorage.setItem("detarture-set", "Avgång")
+    if(dateSelected == false || hourSelected == false || minSelected == false) {
+        searchTripBtn.classList.add("greyOut-btn")
+    }
 })
 
 ankomstBtn.addEventListener("click", function () {
@@ -569,6 +602,10 @@ ankomstBtn.addEventListener("click", function () {
         dateTimeSection.removeAttribute("disabled")
     } else if (ankomstBtn.classList.contains('btn-pressed')) {
         return
+    }
+    localStorage.setItem("detarture-set", "Ankomst")
+    if(dateSelected == false || hourSelected == false || minSelected == false) {
+        searchTripBtn.classList.add("greyOut-btn")
     }
 })
 
