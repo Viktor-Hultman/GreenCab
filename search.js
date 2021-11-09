@@ -547,6 +547,7 @@ const avgångBtn = document.getElementById('avgång')
 const ankomstBtn = document.getElementById('ankomst')
 const dateTimeSection = document.getElementById("date-time-picker")
 
+
 //The following eventListeners are for toggeling a specific css style between 3 buttons (only 1 should be "active")
 åkNuBtn.addEventListener("click", function () {
     if (avgångBtn.classList.contains('btn-pressed')) {
@@ -566,7 +567,6 @@ const dateTimeSection = document.getElementById("date-time-picker")
     if(startCoords != null && endCoords != null) {
         searchTripBtn.classList.remove("greyOut-btn")
     }
-    
 })
 
 avgångBtn.addEventListener("click", function () {
@@ -617,21 +617,38 @@ function clearAllFields() {
     minSelection.value = ""
 }
 
+åkNu()
+
 //The function that runs when pressing the "tillval" button
 function toFilter() {
-    if (startCoords != null && endCoords != null && åkNuBtn.classList.contains('btn-pressed')) {
+    // if (startCoords != null && endCoords != null && åkNuBtn.classList.contains('btn-pressed')) {
+    //     åkNu()
+    //     location.href = 'filter.html'
+    //     clearAllFields()
+    // } else if (startCoords != null && endCoords != null && avgångBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
+    //     avgång()
+    //     location.href = 'filter.html'
+    //     clearAllFields()
+    // } else if (startCoords != null && endCoords != null && ankomstBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
+    //     ankomst()
+    //     location.href = 'filter.html'
+    //     clearAllFields()
+    // } else {
+    //     alert("Pls fill all fields")
+    // }
+    if (searchTripBtn.classList.contains("greyOut-btn")) {
+        return
+    } else if (åkNuBtn.classList.contains('btn-pressed')) {
         åkNu()
         location.href = 'filter.html'
         clearAllFields()
-    } else if (startCoords != null && endCoords != null && avgångBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
+    } else if (avgångBtn.classList.contains('btn-pressed')) {
         avgång()
         location.href = 'filter.html'
         clearAllFields()
-    } else if (startCoords != null && endCoords != null && ankomstBtn.classList.contains('btn-pressed') && dateSelected && hourSelected && minSelected) {
+    } else if (ankomstBtn.classList.contains('btn-pressed')) {
         ankomst()
         location.href = 'filter.html'
         clearAllFields()
-    } else {
-        alert("Pls fill all fields")
     }
 }

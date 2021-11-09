@@ -103,6 +103,7 @@ async function getRoute() {
         } else {
             tripTimeM = Math.round(tripDuration)
         }
+
 }
 
 let tripTimeH = null
@@ -114,20 +115,34 @@ let carArrivalDiv = document.getElementById("carArrival")
 let tripInfo = document.getElementById("tripInfo")
 
 let carArrivalP = document.createElement("p")
+let carTripTime = document.createElement("p")
 
 setTimeout(() => {
     if (tripTimeDate.type == "Åk nu") {
         carArrivalP.innerText = "Din gröna taxi ankommer om ca: 10 min"
+        if (tripTimeH != null) {
+            carTripTime.innerText = `Din resa kommer att ta ca: ${tripTimeH} tim & ${tripTimeM} min`
+        } else {
+            carTripTime.innerText = `Din resa kommer att ta ca: ${tripTimeM} min`
+        }
     } else if (tripTimeDate.type == "Avgång") {
         carArrivalP.innerText = `Din gröna taxi ankommer: ${tripTimeDate.date} ${tripTimeDate.time}`
+        if (tripTimeH != null) {
+            carTripTime.innerText = `Din resa kommer att ta ca: ${tripTimeH} tim & ${tripTimeM} min`
+        } else {
+            carTripTime.innerText = `Din resa kommer att ta ca: ${tripTimeM} min`
+        }
     } else {
         if (tripTimeH != null) {
             carArrivalP.innerText = `Din gröna taxi ankommer: ${tripTimeH} tim & ${tripTimeM} min innan din angivna ankomst-tid: ${tripTimeDate.date} ${tripTimeDate.time}`
+            carTripTime.innerText = `Din resa kommer att ta ca: ${tripTimeH} tim & ${tripTimeM} min`
         } else {
             carArrivalP.innerText = `Din gröna taxi ankommer: ${tripTimeM} min innan din angivna ankomstid: ${tripTimeDate.date} ${tripTimeDate.time}`
+            carTripTime.innerText = `Din resa kommer att ta ca: ${tripTimeM} min`
         }
     }
     carArrivalDiv.appendChild(carArrivalP)
+    carArrivalDiv.appendChild(carTripTime)
 }, 600)
 
 let pleasantries = document.createElement("p")
