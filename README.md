@@ -10,3 +10,10 @@ of our [clickable prototype](https://www.figma.com/file/zoafAjyjN8TGlHJ7hPRVMB/H
 My project focused on "creating" a fully green taxi app, by taking inspiration from other existing apps (Good and bad).
 
 Here is [the app (GreenCab)](https://viktor-hultman.github.io/GreenCab/) that is currently deployed on github pages.
+
+>To run/edit the project on your computer:
+> - Fork or clone the repo.
+> - Open the index.html file in your browser.
+> - And you are good to go!
+
+> Feel free to take inspiration from my solutions to improve your projects
