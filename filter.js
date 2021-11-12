@@ -13,7 +13,6 @@ localStorage.setItem("filter", JSON.stringify(tillvalObj))
 
 //Adding evtListeners to all the 'tillval' options
 tillvalContainers.forEach(item => {
-    let itemCheckbox = item.lastElementChild.firstElementChild
 
     item.addEventListener('click', evt => {
         //Adds the 'checked' class to the clicked option

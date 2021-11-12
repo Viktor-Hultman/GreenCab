@@ -131,6 +131,7 @@ function createFilteredCarsList() {
         carDesc.innerText = `${val.description}`;
         carPrice.innerText = `${val.price} kr`;
         carIcon.src = `${val.img}`;
+        carIcon.alt = `${val.title} car option`
 
         carIconDiv.appendChild(carIcon)
         priceDiv.appendChild(carPrice);
